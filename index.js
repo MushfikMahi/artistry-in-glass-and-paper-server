@@ -3,7 +3,7 @@ require('dotenv').config()
 const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 5000;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 // middlewere
 
 app.use(cors())
@@ -40,6 +40,26 @@ async function run() {
     await client.db("admin").command({ ping: 1 });
 
     const craftsCollection = client.db('craftsDB').collection('crafts')
+
+    app.get('/crafts', async(req, res)=>{
+        const cursor = craftsCollection.find();
+        const result = await cursor.toArray()
+        res.send(result)
+    })
+
+    app.get('/crafts/:id', async(req, res)=>{
+      const id = req.params.id;
+      console.log(id)
+      const query = { _id: new ObjectId(id)}
+      const crafts = await craftsCollection.findOne(query)
+      res.send(crafts)
+    })
+
+    app.get('/mycrafts/:email', async(req, res)=>{
+      console.log(req.params.email);
+      const result = await craftsCollection.find({userEmail: req.params.email}).toArray();
+      res.send(result)
+    })
 
     app.post('/crafts', async(req, res)=>{
         const craft = req.body;
