@@ -61,6 +61,14 @@ async function run() {
       res.send(result)
     })
 
+    app.get('/update/:id', async(req, res)=>{
+      const id = req.params.id;
+      console.log(id)
+      const query = { _id: new ObjectId(id)}
+      const update = await craftsCollection.findOne(query)
+      res.send(update)
+    })
+
     app.post('/crafts', async(req, res)=>{
         const craft = req.body;
         console.log(craft)
