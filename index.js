@@ -65,7 +65,29 @@ async function run() {
       const id = req.params.id;
       console.log(id)
       const query = { _id: new ObjectId(id)}
-      const update = await craftsCollection.findOne(query)
+      const find = await craftsCollection.findOne(query)
+      res.send(find)
+    })
+
+    app.put('/update/:id', async(req, res)=>{
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id)}
+      const option = { upsert: true }
+      const craft = req.body;
+      const updatedCraft = {
+        $set:{
+          photo: craft.photo,
+          name: craft.name,
+          subcategory:craft.subcategory,
+          time:craft.time,
+          price:craft.price,
+          rating:craft.rating,
+          customization:craft.customization,
+          stockStatus:craft.stockStatus,
+          description:craft.description
+        }
+      }
+      const update = await craftsCollection.updateOne(filter, updatedCraft, option)
       res.send(update)
     })
 
