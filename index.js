@@ -40,6 +40,7 @@ async function run() {
     await client.db("admin").command({ ping: 1 });
 
     const craftsCollection = client.db('craftsDB').collection('crafts')
+    const craftsCategoryCollection = client.db('craftsDB').collection('subcategory')
 
     app.get('/crafts', async(req, res)=>{
         const cursor = craftsCollection.find();
@@ -67,6 +68,11 @@ async function run() {
       const query = { _id: new ObjectId(id)}
       const find = await craftsCollection.findOne(query)
       res.send(find)
+    })
+    app.get('/subcategory', async(req, res)=>{
+      const cursor = craftsCategoryCollection.find()
+      const result = await cursor.toArray()
+      res.send(result)
     })
 
     app.put('/update/:id', async(req, res)=>{
